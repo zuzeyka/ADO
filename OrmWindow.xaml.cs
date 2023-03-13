@@ -54,7 +54,7 @@ namespace Lesson1
                 var reader = cmd.ExecuteReader();
                 while(reader.Read())
                 {
-                    Departments.Add(new()
+                    Departments.Add(new(null)
                     {
                         Id = reader.GetGuid(0),
                         Name = reader.GetString(1)
@@ -76,7 +76,7 @@ namespace Lesson1
                 reader = cmd.ExecuteReader();
                 while(reader.Read())
                 {
-                    Managers.Add(new()
+                    Managers.Add(new(null)
                     {
                         Id = reader.GetGuid(0),
                         Name = reader.GetString(1),
@@ -249,7 +249,7 @@ namespace Lesson1
             {
                 if (item.Content is Manager manager)
                 {
-                    ManagerCrudWindow managerCrudWindow = new() { Manager = manager, Owner = this };
+                    ManagerCrudWindow managerCrudWindow = new() { Manager = manager, Departments = Departments, Managers = Managers };
 
                     using SqlCommand cmd = new() { Connection = connection };
 
@@ -461,7 +461,7 @@ namespace Lesson1
 
         private void createManagerBtn_Click(object sender, RoutedEventArgs e)
         {
-            var managerCrudWindow = new ManagerCrudWindow() { Owner = this, Manager = null };
+            var managerCrudWindow = new ManagerCrudWindow() { Manager = null, Departments = Departments, Managers = Managers };
 
             using SqlCommand cmd = new() { Connection = connection };
 

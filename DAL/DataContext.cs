@@ -8,10 +8,11 @@ using System.Windows;
 
 namespace Lesson1.DAL
 {
-    internal class DataContext
+    public class DataContext
     {
         SqlConnection connection;
         public DepartmentApi DepartmentApi { get; set; }
+        public ManagerApi ManagerApi { get; set; }
 
         public DataContext()
         {
@@ -28,7 +29,8 @@ namespace Lesson1.DAL
                 return;
             }
 
-            DepartmentApi = new(this.connection);
+            DepartmentApi = new(this.connection, this);
+            ManagerApi = new(this.connection, this);
         }
     }
 }

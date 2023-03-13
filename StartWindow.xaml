@@ -11,5 +11,6 @@
         <Button x:Name="basicButton" HorizontalContentAlignment="Left" Margin="20 10" Padding="20 5" Click="basicButton_Click">1. Основы технологии</Button>
         <Button x:Name="ormButton" HorizontalContentAlignment="Left" Margin="20 10" Padding="20 5" Click="ormButton_Click">2. ORM</Button>
         <Button x:Name="dalButton" HorizontalContentAlignment="Left" Margin="20 10" Padding="20 5" Click="dalButton_Click">3. DAL</Button>
+        <Button x:Name="efButton" HorizontalContentAlignment="Left" Margin="20 10" Padding="20 5" Click="efButton_Click">3. Entity Framework Core</Button>
     </StackPanel>
 </Window>

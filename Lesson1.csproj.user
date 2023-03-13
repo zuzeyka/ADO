@@ -28,6 +28,9 @@
     <Compile Update="StartWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\EfWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="DalWindow.xaml">
@@ -52,6 +55,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="StartWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\EfWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

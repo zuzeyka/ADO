@@ -1,0 +1,90 @@
+﻿<Window x:Class="Lesson1.View.EfWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lesson1.View"
+        mc:Ignorable="d"
+        Loaded="Window_Loaded"
+        Title="EfWindow" Height="600" Width="1000">
+    <Grid ShowGridLines="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Vertical">
+            <Label FontSize="20" HorizontalAlignment="Center">Monitor</Label>
+            <TextBlock x:Name="monitorTextBlock" />
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Grid.Row="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1">
+                <Label FontSize="20" HorizontalAlignment="Center">Daily Statistics</Label>
+                <Button FontSize="18" Margin="10 0 0 0" x:Name="genSalesButton" Click="genSalesButton_Click">+ sales</Button>
+            </StackPanel>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" FontSize="18">Sales, checks</Label>
+                <Label Grid.Row="0" Grid.Column="1" FontSize="18" x:Name="salesChecks"></Label>
+                
+                <Label Grid.Row="1" Grid.Column="0" FontSize="18">Sales, pcs</Label>
+                <Label Grid.Row="1" Grid.Column="1" FontSize="18" x:Name="salesPcs"></Label>
+
+                <Label Grid.Row="2" Grid.Column="0" FontSize="18">Best pcs</Label>
+                <Label Grid.Row="2" Grid.Column="1" FontSize="18" x:Name="bestPcs"></Label>
+
+                <Label Grid.Row="3" Grid.Column="0" FontSize="18">Start moment</Label>
+                <Label Grid.Row="3" Grid.Column="1" FontSize="18" x:Name="startMoment"></Label>
+
+                <Label Grid.Row="4" Grid.Column="0" FontSize="18">Finish moment</Label>
+                <Label Grid.Row="4" Grid.Column="1" FontSize="18" x:Name="finishMoment"></Label>
+
+                <Label Grid.Row="5" Grid.Column="0" FontSize="18">Average pcs</Label>
+                <Label Grid.Row="5" Grid.Column="1" FontSize="18" x:Name="averagePcs"></Label>
+            </Grid>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <CheckBox VerticalAlignment="Center" x:Name="showDeleted" Checked="showDeleted_Checked" Unchecked="showDeleted_Unchecked">Show deleted</CheckBox>
+                <Label FontSize="18">Departments</Label>
+                <Button FontSize="18" Margin="7 3" Padding="7 1 7 5" x:Name="addDepartmentBtn" Click="addDepartmentBtn_Click">+</Button>
+            </StackPanel>
+            <ScrollViewer>
+                <ListView x:Name="depList" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" MaxHeight="230">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Path=Id}" />
+                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}" />
+                            <GridViewColumn Header="DeletedAt" DisplayMemberBinding="{Binding Path=DeletedAt}" />
+                        </GridView>
+                    </ListView.View>
+                    <ListView.Resources>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
+                        </Style>
+                    </ListView.Resources>
+                </ListView>
+            </ScrollViewer>
+        </StackPanel>
+    </Grid>
+</Window>

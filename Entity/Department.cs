@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lesson1.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,15 @@ namespace Lesson1.Entity
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+
+        DataContext dataContext;
+
+        public IEnumerable<Manager> DepManagers => dataContext.ManagerApi.GetAll(false, false).Where(m => m.IdMainDep == Id);
+
+        public Department(DataContext dataContext)
+        {
+            this.dataContext = dataContext;
+        }
 
         public override string ToString()
         {

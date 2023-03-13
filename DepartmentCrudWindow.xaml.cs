@@ -28,13 +28,13 @@ namespace Lesson1
             {
                 if(value is not null)
                 {
-                    department = new() { Id = value.Id, Name = value.Name };
+                    department = new(null) { Id = value.Id, Name = value.Name };
                     idViewLabel.Text = value.Id.ToString();
                     nameViewLabel.Text = value.Name;
                 }
                 else
                 {
-                    department = new() { Id = Guid.NewGuid(), Name = "" };
+                    department = new(null) { Id = Guid.NewGuid(), Name = "" };
                     idViewLabel.Text = department.Id.ToString();
                 }
             }

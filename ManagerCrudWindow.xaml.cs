@@ -36,12 +36,15 @@ namespace Lesson1
                 }
                 else
                 {
-                    manager = new() { Id = Guid.NewGuid() };
+                    manager = new(null) { Id = Guid.NewGuid() };
                     idViewLabel.Text = manager.Id.ToString();
                 }
             }
         }
         public bool IsDeleted { get; set; } = false;
+
+        public IEnumerable<Department> Departments { get; set; }
+        public IEnumerable<Manager> Managers { get; set; }
 
         public ManagerCrudWindow()
         {
@@ -102,12 +105,15 @@ namespace Lesson1
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            DataContext = Owner;
+            DataContext = new { 
+                Departments = Departments,
+                Managers = Managers
+            };
 
-            var owner = Owner as OrmWindow;
-            var mainDep = owner.Departments.FirstOrDefault(d => d.Id == Manager?.IdMainDep);
-            var secDep = owner.Departments.FirstOrDefault(d => d.Id == Manager?.IdSecDep);
-            var chief = owner.Managers.FirstOrDefault(m => m.Id == Manager?.IdChief);
+            //var owner = Owner as OrmWindow;
+            var mainDep = Departments.FirstOrDefault(d => d.Id == Manager?.IdMainDep);
+            var secDep = Departments.FirstOrDefault(d => d.Id == Manager?.IdSecDep);
+            var chief = Managers.FirstOrDefault(m => m.Id == Manager?.IdChief);
 
             mainDepSelect.SelectedItem = mainDep;
             secDepSelect.SelectedItem = secDep;

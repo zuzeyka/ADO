@@ -44,5 +44,12 @@ namespace Lesson1
             new DalWindow().ShowDialog();
             Show();
         }
+
+        private void efButton_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            new View.EfWindow().ShowDialog();
+            Show();
+        }
     }
 }

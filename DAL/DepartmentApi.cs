@@ -9,26 +9,32 @@ using System.Threading.Tasks;
 
 namespace Lesson1.DAL
 {
-    internal class DepartmentApi
+    public class DepartmentApi
     {
         private readonly SqlConnection connection;
+        private readonly DataContext dataContext;
+        List<Department> list;
 
-        public DepartmentApi(SqlConnection connection)
+        public DepartmentApi(SqlConnection connection, DataContext dataContext)
         {
             this.connection = connection;
+            this.dataContext = dataContext;
+            list = null!;
         }
 
-        public List<Department> GetAll()
+        public List<Department> GetAll(bool reaload = false)
         {
-            var list = new List<Department>();
+            if (list != null && !reaload) return list;
 
+            list ??= new();
+            list.Clear();
             using SqlCommand cmd = new() { Connection = connection };
             cmd.CommandText = "select D.* from Departments D";
 
             var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                list.Add(new()
+                list.Add(new(dataContext)
                 {
                     Id = reader.GetGuid("Id"),
                     Name = reader.GetString("Name")
