@@ -24,6 +24,11 @@ namespace Lesson1.EFCore
             SeedDepartments(modelBuilder);
             SeedProducts(modelBuilder);
             SeedManagers(modelBuilder);
+
+            modelBuilder.Entity<Manager>().HasOne(m => m.MainDep).WithMany(d => d.Workers).HasForeignKey(m => m.IdMainDep).HasPrincipalKey(d => d.Id);
+            modelBuilder.Entity<Manager>().HasOne(m => m.SecDep).WithMany(d => d.SubWorkers).HasForeignKey(m => m.IdSecDep).HasPrincipalKey(d => d.Id);
+            modelBuilder.Entity<Sale>().HasOne(s => s.Manager).WithMany(m => m.Sales).HasForeignKey(s => s.IdManager).HasPrincipalKey(m => m.Id);
+            modelBuilder.Entity<Sale>().HasOne(s => s.Product).WithMany(p => p.Sales).HasForeignKey(s => s.IdProduct).HasPrincipalKey(m => m.Id);
         }
 
         private void SeedDepartments(ModelBuilder modelBuilder)

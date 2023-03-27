@@ -11,5 +11,8 @@ namespace Lesson1.EFCore
         public Guid Id { get; set; }
         public string Name { get; set; }
         public DateTime? DeletedAt { get; set; }
+
+        public List<Manager> Workers { get; set; }
+        public List<Manager> SubWorkers { get; set; }
     }
 }

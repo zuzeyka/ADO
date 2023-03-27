@@ -35,13 +35,19 @@ namespace Lesson1.View
         {
             context.Departments.Load();
             var departments = context.Departments.Local.ToObservableCollection();
-
             depList.ItemsSource = departments;
 
             departmentsView = CollectionViewSource.GetDefaultView(departments);
             departmentsView.Filter = DepartmentFilter;
 
+            context.Managers.Load();
+            var managers = context.Managers.Local.ToObservableCollection();
+            managersList.ItemsSource = managers;
+            context.Sales.Load();
+            var sales = context.Sales.Local.ToObservableCollection();
+
             UpdateMonitor();
+            UpdateDailyStatistics();
         }
 
         void UpdateMonitor()
@@ -54,12 +60,99 @@ namespace Lesson1.View
 
         void UpdateDailyStatistics()
         {
-            salesChecks.Content = "0";
-            salesPcs.Content = "0";
-            bestPcs.Content = "0";
-            startMoment.Content = "0";
-            finishMoment.Content = "0";
-            averagePcs.Content = "0";
+            var todaySales = context.Sales.Where(s => s.SellTime >= DateTime.Today).ToList();
+
+            if (todaySales.Count == 0) return;
+
+            var query = context.Products.GroupJoin(
+                context.Sales,
+                (product) => product.Id,
+                (sale) => sale.IdProduct,
+                (product, sales) => new { Name = product.Name, Count = sales.Count(), Price = product.Price, Quantity = sales.Sum(s => s.Quantity) }
+            ).OrderByDescending(i => i.Count).ToList();
+
+
+            var countChecks = query.Sum(a => a.Count);
+            var sums = query.Select(i => i.Price * i.Quantity);
+            var sumPrices = sums.Sum();
+
+            salesChecks.Content = todaySales.Count.ToString();
+            salesPcs.Content = sumPrices + " грн";
+            maxChecks.Content = todaySales.Max(s => s.Quantity);
+            startMoment.Content = todaySales.Min(s => s.SellTime).ToShortTimeString();
+            finishMoment.Content = todaySales.Max(s => s.SellTime).ToShortTimeString();
+            averagePcs.Content = Math.Round(sumPrices / countChecks, 2) + " грн";
+            deletedChecks.Content = todaySales.Where(s => s.DeletedAt is not null).Count();
+
+            foreach (var item in query)
+            {
+                logBlock.Text += $"{item.Name} - {item.Count}\n";
+            }
+
+            var maxQuantity = query.Max(q => q.Quantity);
+            var maxSum = sums.Max();
+
+            var bestChecks = query.First();
+            var bestCount = query.First(i => i.Quantity == maxQuantity);
+            var bestSum = query.First(i => i.Price * i.Quantity == maxSum);
+
+            bestCheckProduct.Content += $"{bestChecks.Name} ({bestChecks.Count})";
+            bestCountProduct.Content += $"{bestCount.Name} ({maxQuantity} шт)";
+            bestSumProduct.Content += $"{bestSum.Name} - ({maxSum} грн)";
+
+            //////////////////////////////////////////////
+
+            var queryManagers = context.Managers.GroupJoin(
+                context.Sales.Where(s => s.DeletedAt == null).Join(
+                    context.Products,
+                    sale => sale.IdProduct,
+                    product => product.Id,
+                    (sale, product) => new { IdManager = sale.IdManager, Sum = sale.Quantity * product.Price, Quantity = sale.Quantity }
+                ),
+                (m) => m.Id,
+                (s) => s.IdManager,
+                (m, sales) => new { 
+                    Manager = m,
+                    TotalSum = sales.Sum(s => s.Sum),
+                    Count = sales.Count(), 
+                    Quantity = sales.Sum(s => s.Quantity)
+                }
+            );
+            var managersCount = queryManagers.OrderByDescending(m => m.Count).ToList();
+            var managersQuantity = queryManagers.OrderByDescending(m => m.Quantity).ToList();
+            var managersMoney = queryManagers.OrderByDescending(m => m.TotalSum);
+
+            var bestManagerC = managersCount.First();
+            var bestManagerM = managersMoney.First();
+            var top3 = managersQuantity.Take(3).ToList();
+
+            bestManagerChecks.Content = $"{bestManagerC.Manager.Surname} {bestManagerC.Manager.Name[0]}. {bestManagerC.Manager.Secname[0]}. -- {bestManagerC.Count}";
+            bestManagerMoney.Content = $"{bestManagerM.Manager.Surname} {bestManagerM.Manager.Name[0]}. {bestManagerM.Manager.Secname[0]}. -- {bestManagerM.TotalSum} грн";
+
+            for (int i = 0; i < top3.Count; i++)
+            {
+                var m = top3[i];
+                topThreeManager.Content += $"{i + 1}) {m.Manager.Surname} {m.Manager.Name[0]}. {m.Manager.Secname[0]}. -- {m.Quantity}\n";
+            }
+
+            //////////////////////////////////////////////
+
+            var queryDepartments = context.Departments.ToList().GroupJoin(
+                context.Managers.GroupJoin(
+                    context.Sales.Where(s => s.DeletedAt == null),
+                    manager => manager.Id,
+                    sale => sale.IdManager,
+                    (manager, sales) => new { IdMainDep = manager.IdMainDep, Count = sales.Count() }
+                ),
+                department => department.Id,
+                i => i.IdMainDep,
+                (department, i) => new { Name = department.Name, Count = i.Sum(s => s.Count) }
+            ).OrderByDescending(i => i.Count).ToList();
+
+            foreach (var item in queryDepartments)
+            {
+                depLogBlock.Text += $"{item.Name} - {item.Count} продаж\n";
+            }
         }
 
         private void addDepartmentBtn_Click(object sender, RoutedEventArgs e)
@@ -148,6 +241,7 @@ namespace Lesson1.View
 
             context.SaveChanges();
             UpdateMonitor();
+            UpdateDailyStatistics();
         }
     }
 }

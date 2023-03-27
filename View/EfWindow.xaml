@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Lesson1.View"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="EfWindow" Height="600" Width="1000">
+        Title="EfWindow" Height="800" Width="1000">
     <Grid ShowGridLines="True">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -15,7 +15,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="1.5*" />
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Vertical">
@@ -41,27 +41,59 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Grid.Column="0" FontSize="18">Sales, checks</Label>
-                <Label Grid.Row="0" Grid.Column="1" FontSize="18" x:Name="salesChecks"></Label>
+                <Label Grid.Row="0" Grid.Column="0" FontSize="14">Sales, checks</Label>
+                <Label Grid.Row="0" Grid.Column="1" FontSize="14" x:Name="salesChecks"></Label>
                 
-                <Label Grid.Row="1" Grid.Column="0" FontSize="18">Sales, pcs</Label>
-                <Label Grid.Row="1" Grid.Column="1" FontSize="18" x:Name="salesPcs"></Label>
+                <Label Grid.Row="1" Grid.Column="0" FontSize="14">Sales, pcs</Label>
+                <Label Grid.Row="1" Grid.Column="1" FontSize="14" x:Name="salesPcs"></Label>
 
-                <Label Grid.Row="2" Grid.Column="0" FontSize="18">Best pcs</Label>
-                <Label Grid.Row="2" Grid.Column="1" FontSize="18" x:Name="bestPcs"></Label>
+                <Label Grid.Row="2" Grid.Column="0" FontSize="14">Maximum check</Label>
+                <Label Grid.Row="2" Grid.Column="1" FontSize="14" x:Name="maxChecks"></Label>
 
-                <Label Grid.Row="3" Grid.Column="0" FontSize="18">Start moment</Label>
-                <Label Grid.Row="3" Grid.Column="1" FontSize="18" x:Name="startMoment"></Label>
+                <Label Grid.Row="3" Grid.Column="0" FontSize="14">Start moment</Label>
+                <Label Grid.Row="3" Grid.Column="1" FontSize="14" x:Name="startMoment"></Label>
 
-                <Label Grid.Row="4" Grid.Column="0" FontSize="18">Finish moment</Label>
-                <Label Grid.Row="4" Grid.Column="1" FontSize="18" x:Name="finishMoment"></Label>
+                <Label Grid.Row="4" Grid.Column="0" FontSize="14">Finish moment</Label>
+                <Label Grid.Row="4" Grid.Column="1" FontSize="14" x:Name="finishMoment"></Label>
 
-                <Label Grid.Row="5" Grid.Column="0" FontSize="18">Average pcs</Label>
-                <Label Grid.Row="5" Grid.Column="1" FontSize="18" x:Name="averagePcs"></Label>
+                <Label Grid.Row="5" Grid.Column="0" FontSize="14">Average pcs</Label>
+                <Label Grid.Row="5" Grid.Column="1" FontSize="14" x:Name="averagePcs"></Label>
+
+                <Label Grid.Row="6" Grid.Column="0" FontSize="14">Deleted checks</Label>
+                <Label Grid.Row="6" Grid.Column="1" FontSize="14" x:Name="deletedChecks"></Label>
+
+                <Separator Grid.Row="7" Grid.ColumnSpan="2" />
+
+                <Label Grid.Row="8" Grid.Column="0" FontSize="14">Best manager (checks)</Label>
+                <Label Grid.Row="8" Grid.Column="1" FontSize="14" x:Name="bestManagerChecks"></Label>
+
+                <Label Grid.Row="9" Grid.Column="0" FontSize="14">Top 3 managers</Label>
+                <Label Grid.Row="9" Grid.Column="1" FontSize="14" x:Name="topThreeManager" xml:space="preserve"></Label>
+                
+                <Label Grid.Row="10" Grid.Column="0" FontSize="14">Best manager (money)</Label>
+                <Label Grid.Row="10" Grid.Column="1" FontSize="14" x:Name="bestManagerMoney"></Label>
             </Grid>
         </StackPanel>
+
+        <ScrollViewer Grid.Row="1" Grid.Column="1">
+            <StackPanel Orientation="Vertical">
+                <Label FontSize="12" x:Name="bestCheckProduct">Best check: </Label>
+                <Label FontSize="12" x:Name="bestCountProduct">Best count: </Label>
+                <Label FontSize="12" x:Name="bestSumProduct">Best pcs: </Label>
+                <TextBlock x:Name="logBlock" Padding="8"></TextBlock>
+            </StackPanel>
+        </ScrollViewer>
+
+        <ScrollViewer Grid.Row="1" Grid.Column="2">
+            <TextBlock x:Name="depLogBlock" Padding="8"></TextBlock>
+        </ScrollViewer>
 
         <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -76,6 +108,34 @@
                             <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Path=Id}" />
                             <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}" />
                             <GridViewColumn Header="DeletedAt" DisplayMemberBinding="{Binding Path=DeletedAt}" />
+                        </GridView>
+                    </ListView.View>
+                    <ListView.Resources>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
+                        </Style>
+                    </ListView.Resources>
+                </ListView>
+            </ScrollViewer>
+        </StackPanel>
+        
+        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="2">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <!--<CheckBox VerticalAlignment="Center" x:Name="showDeletedMan" Checked="showDeleted_Checked" Unchecked="showDeleted_Unchecked">Show deleted</CheckBox>-->
+                <Label FontSize="18">Managers</Label>
+                <!--<Button FontSize="18" Margin="7 3" Padding="7 1 7 5" x:Name="addManagerBtn" Click="addDepartmentBtn_Click">+</Button>-->
+            </StackPanel>
+            <ScrollViewer>
+                <ListView x:Name="managersList" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" MaxHeight="230">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}" />
+                            <GridViewColumn Header="Surname" DisplayMemberBinding="{Binding Path=Surname}" />
+                            <GridViewColumn Header="Department" DisplayMemberBinding="{Binding Path=MainDep.Name}" />
+                            <GridViewColumn Header="SecDepartment" DisplayMemberBinding="{Binding Path=SecDep.Name}" />
+                            <GridViewColumn Header="Workers" DisplayMemberBinding="{Binding Path=MainDep.Workers.Count}" />
+                            <GridViewColumn Header="SubWorkers" DisplayMemberBinding="{Binding Path=SecDep.Workers.Count}" />
+                            <GridViewColumn Header="Sales" DisplayMemberBinding="{Binding Path=Sales.Count}" />
                         </GridView>
                     </ListView.View>
                     <ListView.Resources>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lesson1.EFCore
 {
-    internal class Sale
+    public class Sale
     {
         public Guid Id { get; set; }
         public DateTime SellTime { get; set; }
@@ -14,5 +14,9 @@ namespace Lesson1.EFCore
         public Guid IdProduct { get; set; }
         public Guid IdManager { get; set; }
         public DateTime? DeletedAt { get; set; }
+
+        public Manager Manager { get; set; }
+        //public List<Manager> Managers { get; set; }
+        public Product Product { get; set; }
     }
 }
